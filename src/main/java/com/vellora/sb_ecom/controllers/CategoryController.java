@@ -2,6 +2,7 @@ package com.vellora.sb_ecom.controllers;
 
 import com.vellora.sb_ecom.models.Category;
 import com.vellora.sb_ecom.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createCategory(@RequestBody Category category){
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category){
         return new ResponseEntity<>(categoryService.addCategory(category) , HttpStatus.CREATED);
     }
 

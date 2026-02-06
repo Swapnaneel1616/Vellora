@@ -1,3 +1,15 @@
 spring:
   application:
     name: sb-ecom
+  h2:
+    console:
+      enabled: true
+  datasource:
+    url: jdbc:h2:mem:e21a2a4b-e7a2-46d2-ba67-e60fce6e40cd
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update

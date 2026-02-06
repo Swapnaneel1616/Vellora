@@ -1,6 +1,8 @@
 package com.vellora.sb_ecom.service;
 
 import com.vellora.sb_ecom.models.Category;
+import com.vellora.sb_ecom.repositories.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,39 +14,27 @@ import java.util.Optional;
 @Service
 public class CategoryService {
 
-    private final List<Category> categoryList = new ArrayList<>();
-    private Long categoryIDCounter = 1L;
-
+    @Autowired
+    private CategoryRepository categoryRepository;
     public List<Category> getCategories() {
-        return categoryList;
+        return categoryRepository.findAll();
     }
-
-
     public String addCategory(Category category) {
-        category.setCategoryId(categoryIDCounter++);
-        categoryList.add(category);
+        categoryRepository.save(category);
         return "Category Added Successfully";
     }
-
     public String deleteCategory(Long id) {
-        Category category = categoryList.stream()
-                .filter(c -> c.getCategoryId().equals(id))
-                .findFirst().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Rersource Not Found"));
-        categoryList.remove(category);
-        return "Category Deleted Successfully";
-    }
 
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND , "RESOURCE NOT FOUND"));
+        categoryRepository.delete((category));
+        return "CATEGORY with ID" + id + "is DELETED";
+    }
     public Category updateCategory(Long id, Category updatedCategory) {
-        Optional<Category> categoryOptional = categoryList.stream().
-                filter(c->c.getCategoryId().equals(id))
-                .findFirst();
-        if(categoryOptional.isPresent()){
-            Category existingcategory = categoryOptional.get();
-            existingcategory.setCategoryName(updatedCategory.getCategoryName());
-            return existingcategory;
-        }
-        else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND , "Category Not Found");
-        }
+        Category savedCategory = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Resource NOT FOUND"));
+        updatedCategory.setCategoryId(id);
+        savedCategory = categoryRepository.save(updatedCategory);
+        return savedCategory;
     }
 }
