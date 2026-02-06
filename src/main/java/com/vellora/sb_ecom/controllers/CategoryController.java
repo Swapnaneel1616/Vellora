@@ -30,23 +30,14 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id){
-        try {
-            return new ResponseEntity<>(categoryService.deleteCategory(id), HttpStatus.OK);
-        }
-        catch(ResponseStatusException e){
-            return new ResponseEntity<>(e.getReason() , e.getStatusCode());
-        }
+        return new ResponseEntity<>(categoryService.deleteCategory(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCategory(@PathVariable Long id , @RequestBody Category updatedCategory){
-        try{
-            Category savedCategory = categoryService.updateCategory(id , updatedCategory);
-            return new ResponseEntity<>("Category is Created"+ savedCategory , HttpStatus.OK);
-        }
-        catch (ResponseStatusException e){
-            return new ResponseEntity<>(e.getReason() , e.getStatusCode());
-        }
+    public ResponseEntity<String> updateCategory(@PathVariable Long id ,
+                                                 @Valid @RequestBody Category updatedCategory){
+        Category savedCategory = categoryService.updateCategory(id , updatedCategory);
+        return new ResponseEntity<>("Category is Created"+ savedCategory , HttpStatus.OK);
     }
 
 }

@@ -19,7 +19,11 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
     public List<Category> getCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+        if(categories.isEmpty()){
+            throw new APIExcepton("NO CATEGORY CREATED TILL NOW !!!!");
+        }
+        return categories;
     }
     public String addCategory(Category category) {
         Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
