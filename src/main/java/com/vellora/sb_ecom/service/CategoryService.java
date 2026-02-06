@@ -1,5 +1,6 @@
 package com.vellora.sb_ecom.service;
 
+import com.vellora.sb_ecom.Exceptions.APIExcepton;
 import com.vellora.sb_ecom.Exceptions.ResourceNotFoundException;
 import com.vellora.sb_ecom.models.Category;
 import com.vellora.sb_ecom.repositories.CategoryRepository;
@@ -21,6 +22,10 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
     public String addCategory(Category category) {
+        Category savedCategory = categoryRepository.findByCategoryName(category.getCategoryName());
+        if(savedCategory!= null){
+            throw new APIExcepton("Category with the name "+ category.getCategoryName()+ " already exists");
+        }
         categoryRepository.save(category);
         return "Category Added Successfully";
     }
