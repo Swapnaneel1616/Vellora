@@ -1,5 +1,6 @@
 package com.vellora.sb_ecom.service;
 
+import com.vellora.sb_ecom.Exceptions.ResourceNotFoundException;
 import com.vellora.sb_ecom.models.Category;
 import com.vellora.sb_ecom.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,13 @@ public class CategoryService {
     public String deleteCategory(Long id) {
 
         Category category = categoryRepository.findById(id)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND , "RESOURCE NOT FOUND"));
+                .orElseThrow(()-> new ResourceNotFoundException("Category" , "categoryId" , id));
         categoryRepository.delete((category));
         return "CATEGORY with ID" + id + "is DELETED";
     }
     public Category updateCategory(Long id, Category updatedCategory) {
         Category savedCategory = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND , "Resource NOT FOUND"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category" , "categoryId" , id));
         updatedCategory.setCategoryId(id);
         savedCategory = categoryRepository.save(updatedCategory);
         return savedCategory;
