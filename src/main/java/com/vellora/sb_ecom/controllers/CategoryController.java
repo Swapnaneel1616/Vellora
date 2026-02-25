@@ -1,6 +1,7 @@
 package com.vellora.sb_ecom.controllers;
 
 import com.vellora.sb_ecom.models.Category;
+import com.vellora.sb_ecom.payload.CategoryDTO;
 import com.vellora.sb_ecom.payload.CategoryResponse;
 import com.vellora.sb_ecom.service.CategoryService;
 import jakarta.validation.Valid;
@@ -25,20 +26,20 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category){
-        return new ResponseEntity<>(categoryService.addCategory(category) , HttpStatus.CREATED);
+    public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryDTO categoryDTO){
+        return new ResponseEntity<>(categoryService.addCategory(categoryDTO) , HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long id){
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id){
         return new ResponseEntity<>(categoryService.deleteCategory(id), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateCategory(@PathVariable Long id ,
-                                                 @Valid @RequestBody Category updatedCategory){
-        Category savedCategory = categoryService.updateCategory(id , updatedCategory);
-        return new ResponseEntity<>("Category is Created"+ savedCategory , HttpStatus.OK);
+    public ResponseEntity<?> updateCategory(@PathVariable Long id ,
+                                                 @Valid @RequestBody CategoryDTO updatedCategory){
+        CategoryDTO savedCategoryDTO = categoryService.updateCategory(id , updatedCategory);
+        return new ResponseEntity<>(savedCategoryDTO , HttpStatus.OK);
     }
 
 }
