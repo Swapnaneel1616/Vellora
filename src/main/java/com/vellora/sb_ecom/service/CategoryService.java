@@ -8,6 +8,9 @@ import com.vellora.sb_ecom.payload.CategoryResponse;
 import com.vellora.sb_ecom.repositories.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,8 +28,11 @@ public class CategoryService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public CategoryResponse getCategories() {
-        List<Category> categories = categoryRepository.findAll();
+    public CategoryResponse getCategories(Integer pageNo , Integer pageSize) {
+
+        Pageable pageDetails = PageRequest.of(pageNo,pageSize);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+        List<Category> categories = categoryPage.getContent();
         if(categories.isEmpty()){
             throw new APIExcepton("NO CATEGORY CREATED TILL NOW !!!!");
         }

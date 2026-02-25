@@ -14,28 +14,31 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/public/categories")
+@RequestMapping("/api")
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping()
-    public ResponseEntity<?> getAllCategories(){
-        return new ResponseEntity<>(categoryService.getCategories() , HttpStatus.OK);
+    @GetMapping("/public/categories")
+    public ResponseEntity<?> getAllCategories(
+            @RequestParam(name = "pageNumber") Integer pageNumber,
+            @RequestParam(name = "pageSize") Integer pageSize){
+        return new ResponseEntity<>(categoryService.getCategories(pageNumber , pageSize) , HttpStatus.OK);
     }
 
-    @PostMapping
+
+    @PostMapping("/public/categories")
     public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryDTO categoryDTO){
         return new ResponseEntity<>(categoryService.addCategory(categoryDTO) , HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/public/categories/{id}")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id){
         return new ResponseEntity<>(categoryService.deleteCategory(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/public/categories/{id}")
     public ResponseEntity<?> updateCategory(@PathVariable Long id ,
                                                  @Valid @RequestBody CategoryDTO updatedCategory){
         CategoryDTO savedCategoryDTO = categoryService.updateCategory(id , updatedCategory);
