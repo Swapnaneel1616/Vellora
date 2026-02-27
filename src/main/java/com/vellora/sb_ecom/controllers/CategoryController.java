@@ -1,5 +1,6 @@
 package com.vellora.sb_ecom.controllers;
 
+import com.vellora.sb_ecom.config.AppConstants;
 import com.vellora.sb_ecom.models.Category;
 import com.vellora.sb_ecom.payload.CategoryDTO;
 import com.vellora.sb_ecom.payload.CategoryResponse;
@@ -22,8 +23,8 @@ public class CategoryController {
 
     @GetMapping("/public/categories")
     public ResponseEntity<?> getAllCategories(
-            @RequestParam(name = "pageNumber") Integer pageNumber,
-            @RequestParam(name = "pageSize") Integer pageSize){
+            @RequestParam(name = "pageNumber" , defaultValue = AppConstants.PAGE_NUMBER , required = false) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = AppConstants.PAGE_SIZE , required = false) Integer pageSize){
         return new ResponseEntity<>(categoryService.getCategories(pageNumber , pageSize) , HttpStatus.OK);
     }
 
