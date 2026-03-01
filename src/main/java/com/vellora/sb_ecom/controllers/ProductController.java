@@ -4,6 +4,7 @@ import com.vellora.sb_ecom.models.Product;
 import com.vellora.sb_ecom.payload.ProductDTO;
 import com.vellora.sb_ecom.payload.ProductResponse;
 import com.vellora.sb_ecom.service.ProductService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,10 @@ public class ProductController {
     public ResponseEntity<ProductResponse> getAllProducts(){
         ProductResponse productResponse = productService.getAllProducts();
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
+    }
+    @GetMapping("/public/categories/{categoryId}/products")
+    public ResponseEntity<ProductResponse> getProudctByCategory(@PathVariable Long categoryId){
+        ProductResponse productResponse = productService.searchByCategory(categoryId);
+        return new ResponseEntity<>(productResponse , HttpStatus.OK);
     }
 }
