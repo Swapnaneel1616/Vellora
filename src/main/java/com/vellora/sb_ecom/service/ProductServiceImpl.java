@@ -10,6 +10,7 @@ import com.vellora.sb_ecom.repositories.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -101,5 +102,11 @@ public class ProductServiceImpl implements ProductService{
                 .orElseThrow(()->new ResourceNotFoundException("Product","productId", productId));
         productRepository.delete(product);
         return modelMapper.map(product , ProductDTO.class);
+    }
+
+    @Override
+    public ProductDTO updateProductImage(Long productId, MultipartFile image) {
+
+        return null;
     }
 }
