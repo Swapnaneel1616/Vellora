@@ -5,6 +5,8 @@ import com.vellora.sb_ecom.payload.ProductResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @Service
 public interface ProductService {
     ProductDTO addProduct(Long categoryId, ProductDTO product);
@@ -19,5 +21,5 @@ public interface ProductService {
 
     ProductDTO deleteProduct(Long productId);
 
-    ProductDTO updateProductImage(Long productId, MultipartFile image);
+    ProductDTO updateProductImage(Long productId, MultipartFile image) throws IOException;
 }

@@ -13,3 +13,7 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
+
+
+project:
+  image: images/
