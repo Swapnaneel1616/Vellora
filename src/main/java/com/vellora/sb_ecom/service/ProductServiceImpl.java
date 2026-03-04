@@ -1,5 +1,6 @@
 package com.vellora.sb_ecom.service;
 
+import com.vellora.sb_ecom.Exceptions.APIExcepton;
 import com.vellora.sb_ecom.Exceptions.ResourceNotFoundException;
 import com.vellora.sb_ecom.models.Category;
 import com.vellora.sb_ecom.models.Product;
@@ -41,19 +42,34 @@ public class ProductServiceImpl implements ProductService{
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(()->new ResourceNotFoundException("Category","categoryId", categoryId));
-        Product product = modelMapper.map(productDTO , Product.class);
-        product.setCategory(category);
-        product.setImage("default.page");
-        double specialPrice = product.getPrice() - ((product.getDiscount()*0.01) * product.getPrice());
-        product.setSpecialPrice(specialPrice);
-        Product savedProduct = productRepository.save(product);
+        boolean ifProductIsNotPresent = true;
+        List<Product> products = category.getProducts();
+        for (Product value : products) {
+            if (value.getProductName().equals(productDTO.getProductName())) {
+                ifProductIsNotPresent = false;
+                break;
+            }
+        }
+        if(ifProductIsNotPresent) {
+            Product product = modelMapper.map(productDTO, Product.class);
+            product.setCategory(category);
+            product.setImage("default.page");
+            double specialPrice = product.getPrice() - ((product.getDiscount() * 0.01) * product.getPrice());
+            product.setSpecialPrice(specialPrice);
+            Product savedProduct = productRepository.save(product);
 
-        return modelMapper.map(savedProduct , ProductDTO.class);
+
+            return modelMapper.map(savedProduct, ProductDTO.class);
+        }
+        else{
+            throw new APIExcepton("Product already exists");
+        }
     }
 
     @Override
     public ProductResponse getAllProducts() {
         List<Product> products = productRepository.findAll();
+
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product,ProductDTO.class))
                 .toList();
