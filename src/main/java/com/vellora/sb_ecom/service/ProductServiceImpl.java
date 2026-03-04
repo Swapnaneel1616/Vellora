@@ -2,7 +2,6 @@ package com.vellora.sb_ecom.service;
 
 import com.vellora.sb_ecom.Exceptions.APIExcepton;
 import com.vellora.sb_ecom.Exceptions.ResourceNotFoundException;
-import com.vellora.sb_ecom.config.AppConstants;
 import com.vellora.sb_ecom.models.Category;
 import com.vellora.sb_ecom.models.Product;
 import com.vellora.sb_ecom.payload.ProductDTO;
@@ -17,15 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class ProductServiceImpl implements ProductService{
@@ -100,13 +94,13 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductResponse searchByCategory(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        Category category = categoryRepository.findById(categoryId).
+                orElseThrow(()->new ResourceNotFoundException("Category","categoryId", categoryId));
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
                 ?Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageDetails = PageRequest.of(pageNumber,pageSize, sortByAndOrder);
-        Page<Product> pageProducts = productRepository.findAll(pageDetails);
-        Category category = categoryRepository.findById(categoryId).
-                orElseThrow(()->new ResourceNotFoundException("Category","categoryId", categoryId));
+        Page<Product> pageProducts = productRepository.findByCategoryOrderByPriceAsc(category , pageDetails);
         List<Product> products = pageProducts.getContent();
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product,ProductDTO.class))
@@ -128,8 +122,8 @@ public class ProductServiceImpl implements ProductService{
                 ?Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         Pageable pageDetails = PageRequest.of(pageNumber,pageSize, sortByAndOrder);
-        Page<Product> pageProducts = productRepository.findAll(pageDetails);
-        List<Product> products = productRepository.findByProductNameLikeIgnoreCase('%' +keyword + '%');
+        Page<Product> pageProducts = productRepository.findByProductNameLikeIgnoreCase('%' +keyword + '%' , pageDetails);
+        List<Product> products = pageProducts.getContent();
         List<ProductDTO> productDTOS = products.stream()
                 .map(product -> modelMapper.map(product,ProductDTO.class))
                 .toList();
